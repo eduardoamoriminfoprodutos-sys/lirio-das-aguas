@@ -12,8 +12,8 @@ var CARTKEY = 'lirio_delivery_cart';        // carrinho do cliente (local, sobre
 var lastRev = null;
 var bc = null; try{ if(typeof BroadcastChannel!=='undefined') bc = new BroadcastChannel('lirio_delivery'); }catch(e){ bc=null; }
 /* ===== Sincronização na nuvem (Supabase) — cross-device (celular <-> computador) ===== */
-var SUPA_URL = ''; // modo local por enquanto (preencher pra ligar o Supabase)
-var SUPA_KEY = '';
+var SUPA_URL = 'https://hhrrbpkqovjspomojytw.supabase.co';   // Supabase da Lírio das Águas (teste)
+var SUPA_KEY = 'sb_publishable_5YdkqnbV0iZHnTmkIX-pbQ_nrxH99Je';
 var CLOUD = !!(SUPA_URL && SUPA_KEY && typeof window!=='undefined' && window.supabase);
 var sb = CLOUD ? window.supabase.createClient(SUPA_URL, SUPA_KEY) : null;
 var PERMITIR_PEDIDO_SEMPRE = true; // FASE DE TESTE: cliente faz pedido em qualquer horário. Por false ao lançar pra valer.
@@ -153,7 +153,17 @@ function seed(){
     'Box Surpresa Personalizada':['assets/prod-box-personalizada.jpg'],
     'Cesta Maternidade':['assets/prod-cesta-maternidade.jpg'],
     'Box Feminino':['assets/prod-box-feminino.jpg'],
-    'Buquê de Borboletas':['assets/prod-buque-borboletas.jpg']
+    'Buquê de Borboletas':['assets/prod-buque-borboletas.jpg'],
+    'Buquê de Rosas':['assets/prod-buque-rosas.jpg'],
+    'Buquê de Lírios':['assets/prod-buque-lirios.jpg'],
+    'Buquê de Gérberas':['assets/prod-buque-gerberas.jpg'],
+    'Buquê de Girassóis':['assets/prod-buque-girassois.jpg'],
+    'Box Te Amo':['assets/prod-box-teamo.jpg'],
+    'Cesta Café da Manhã':['assets/prod-cesta-cafe.jpg'],
+    'Cesta Masculina Malbec':['assets/prod-cesta-masculina.jpg'],
+    'Balão Bubble Personalizado':['assets/prod-balao-bubble.jpg'],
+    'Arranjo em Vaso':['assets/prod-arranjo-vaso.jpg'],
+    'Orquídea no Cachepô':['assets/prod-orquidea.jpg']
   };
   produtos.forEach(function(p){ if(FOTOS[p.nome]){ p.fotos=FOTOS[p.nome].slice(); p.foto=p.fotos[0]; } });
   var categorias = [
