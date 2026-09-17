@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=1">
+<link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
   <div id="app"></div>
@@ -23,8 +23,8 @@
   <div id="toast-root"></div>
   <canvas id="imgcanvas" hidden></canvas>
   <input id="filepick" type="file" accept="image/*" hidden>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>window.DM_APP='cliente';</script>
-  <script src="app.js?v=1"></script>
+  <!-- Supabase CDN desligado no modo local. Reativar ao ligar o Supabase: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> -->
+  <script>window.LIRIO_APP='cliente';</script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>

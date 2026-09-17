@@ -6,7 +6,7 @@
 'use strict';
 var LSKEY = 'lirio_delivery_v1';           // estado compartilhado (loja, catálogo, pedidos, clientes)
 var MEKEY = 'lirio_delivery_me';           // perfil do cliente (local, não sincroniza entre cliente/dono)
-var APP_MODE = (typeof window!=='undefined' && window.DM_APP==='admin') ? 'admin' : 'cliente';
+var APP_MODE = (typeof window!=='undefined' && window.LIRIO_APP==='admin') ? 'admin' : 'cliente';
 var REVKEY = 'lirio_delivery_rev';          // token de versão: muda a cada gravação, pra detectar mudança de outra aba/PWA
 var CARTKEY = 'lirio_delivery_cart';        // carrinho do cliente (local, sobrevive ao recarregar)
 var lastRev = null;
@@ -77,14 +77,13 @@ function ic(name,cls){ return '<svg class="ic'+(cls?' '+cls:'')+'" viewBox="0 0 
 
 /* glyphs de categoria (placeholder de foto) */
 var GLYPH={
-  espetinhos:'<path d="M4 20 20 4"/><circle cx="8.5" cy="13" r="2.4"/><circle cx="12.5" cy="9" r="2.4"/>',
-  lanches:'<path d="M4 9a8 8 0 0 1 16 0Z"/><rect x="3" y="12" width="18" height="3" rx="1.5"/><path d="M5 18h14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2Z"/>',
-  porcoes:'<path d="M7 8h10l-1 12H8Z"/><path d="M9.5 8V4M12 8V3M14.5 8V5"/>',
-  bebidas:'<path d="M7 4h10l-1.4 16a1 1 0 0 1-1 .9H9.4a1 1 0 0 1-1-.9Z"/><path d="M7 9h10"/>',
-  sobremesas:'<path d="M6 12h12l-1.4 8H7.4Z"/><path d="M7 12a5 5 0 0 1 10 0"/><path d="M12 4v3"/>',
-  _def:'<path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>'
+  buques:'<path d="M12 3s2 2.2 2 4.8a2 2 0 0 1-4 0C10 5.2 12 3 12 3Z"/><path d="M8 8.5S9.5 11 12 11s4-2.5 4-2.5"/><path d="M12 11v9"/><path d="M8.5 20h7"/>',
+  boxes:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M4 12v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8"/><path d="M12 8S10.5 3 8 3a2.5 2.5 0 0 0 0 5"/><path d="M12 8s1.5-5 4-5a2.5 2.5 0 0 1 0 5"/>',
+  cestas:'<path d="M4 9h16l-1.4 10.2a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8Z"/><path d="M3 9h18"/><path d="M8.5 9a3.5 3.5 0 0 1 7 0"/>',
+  baloes:'<ellipse cx="12" cy="9" rx="6" ry="7"/><path d="M12 16v3"/><path d="m10.6 19.5 1.4-1.2 1.4 1.2"/>',
+  flores:'<circle cx="12" cy="9.5" r="2.2"/><path d="M12 7.3C12 4.5 13.6 3.5 13.6 3.5M14.2 9.5C17 9.5 18 11.1 18 11.1M12 11.7c0 2.8-1.6 3.8-1.6 3.8M9.8 9.5C7 9.5 6 7.9 6 7.9"/><path d="M12 11.7V20"/>',
+  _def:'<path d="M12 3s2 2.2 2 4.8a2 2 0 0 1-4 0C10 5.2 12 3 12 3Z"/><path d="M8 8.5S9.5 11 12 11s4-2.5 4-2.5"/><path d="M12 11v9"/><path d="M8.5 20h7"/>'
 };
-GLYPH.espetos=GLYPH.espetinhos; GLYPH.acomp=GLYPH.porcoes; GLYPH.acai=GLYPH.sobremesas; GLYPH.bebida=GLYPH.bebidas;
 function catGlyph(id){ return GLYPH[id]||GLYPH._def; }
 function phG(glyph, hue){
   hue = hue==null?28:hue;
@@ -259,7 +258,7 @@ function isAdmin(){ return UI.adm.user && UI.adm.user.papel==='admin'; }
 function telValido(t){ return String(t||'').replace(/\D/g,'').length>=10; }
 
 /* ---- horário de funcionamento (aberto/fechado automático, fuso de Breu Branco/PA) ---- */
-var DEFAULT_JANELAS=[['11:00','15:00'],['18:00','23:00']];
+var DEFAULT_JANELAS=[['08:00','18:00']];
 function hm(s){ var p=String(s||'0:0').split(':'); return (parseInt(p[0],10)||0)*60+(parseInt(p[1],10)||0); }
 function janelasLoja(){ var j=S.loja&&S.loja.janelas; return (j&&j.length)?j:DEFAULT_JANELAS; }
 function agoraMinLoja(){
@@ -576,7 +575,7 @@ function cliPagamento(){
       '<button class="btn btn-outline btn-sm btn-block" data-action="chk-copiapix">'+ic('copy')+' Copiar chave Pix</button>'+
       '<div class="upload-wrap"><label class="up-lb">Comprovante do Pix</label>'+
       '<div class="upload'+(c.comprov?' has':'')+'" data-action="chk-upload">'+(c.comprov?ic('check')+' Comprovante anexado<img src="'+c.comprov+'">':ic('attach')+' Toque para anexar o comprovante')+'</div></div>'+
-      '<div class="notice warn left">'+ic('warn')+'<div>O pedido só vai pra cozinha depois que o restaurante <strong>confirmar o Pix</strong>. Anexar o comprovante não aprova sozinho.</div></div></div>';
+      '<div class="notice warn left">'+ic('warn')+'<div>O pedido só entra em preparo depois que a loja <strong>confirmar o Pix</strong>. Anexar o comprovante não aprova sozinho.</div></div></div>';
   } else if(c.pay==='dinheiro'){
     h+='<div class="card"><div class="field"><label>Precisa de troco? Para quanto? (opcional)</label><input inputmode="numeric" data-oninput="chk-f" data-k="troco" value="'+esc(c.troco)+'" placeholder="Ex.: 50"></div></div>';
   } else if(c.pay==='cartao'){
@@ -635,12 +634,12 @@ function stepIndex(o){
 function statusCliente(o){
   var m={
     aguardando_comprovante:{lbl:'Aguardando comprovante',sub:'Reenvie o comprovante do Pix'},
-    em_validacao:{lbl:'Comprovante em validação',sub:'Aguardando o restaurante confirmar seu Pix'},
-    aguardando_aceite:{lbl:'Aguardando o restaurante',sub:'O restaurante vai aceitar seu pedido'},
+    em_validacao:{lbl:'Comprovante em validação',sub:'Aguardando a loja confirmar seu Pix'},
+    aguardando_aceite:{lbl:'Aguardando a loja',sub:'A loja vai aceitar seu pedido'},
     em_preparo:{lbl:'Em preparo',sub:'Seu pedido está sendo feito'},
     pronto:{lbl:o.tipo==='retirada'?'Pronto para retirada':'Pronto',sub:o.tipo==='retirada'?'Pode vir buscar!':'Aguardando o entregador'},
     saiu:{lbl:'Saiu para entrega',sub:'A caminho do seu endereço'},
-    concluido:{lbl:'Concluído',sub:'Pedido finalizado. Bom apetite!'},
+    concluido:{lbl:'Concluído',sub:'Pedido finalizado. Obrigado pela preferência!'},
     recusado:{lbl:'Pedido recusado',sub:o.pay.motivoRecusa||''},
     cancelado:{lbl:'Cancelado',sub:''}
   };
@@ -762,10 +761,10 @@ function admSemPermissao(){ return '<div class="empty">'+ic('lock','big')+'Este 
 function admLogin(){
   return '<div class="login"><img class="l-logo" src="assets/logo-lirio.png" alt=""><h1>'+esc(S.loja.nome)+' · Painel</h1>'+
     '<p>Acesso exclusivo do dono e da equipe.</p>'+
-    '<div class="l-form"><div class="field"><label>Usuário</label><input id="lg-user" value="denis"></div>'+
+    '<div class="l-form"><div class="field"><label>Usuário</label><input id="lg-user" value="yara"></div>'+
     '<div class="field"><label>Senha</label><input id="lg-pass" type="password" value="1234"></div>'+
     '<button class="btn btn-primary btn-block btn-lg" data-action="adm-login">Entrar</button>'+
-    '<div class="l-hint">Acesso de teste: <strong>denis</strong> / 1234 (dono) · <strong>atendente</strong> / 1234 (equipe)</div></div></div>';
+    '<div class="l-hint">Acesso de teste: <strong>yara</strong> / 1234 (dona) · <strong>atendente</strong> / 1234 (equipe)</div></div></div>';
 }
 function admTop(){
   var pend=S.pedidos.filter(function(p){return ['em_validacao','aguardando_aceite'].indexOf(p.status)>=0;}).length;
@@ -947,7 +946,7 @@ function cupomHTML(o,reimp){
     var det=itemDet(i);
     return '<div class="tk-l"><span>'+i.qty+'x '+esc(i.nome)+'</span><span>'+money(i.preco*i.qty)+'</span></div>'+(det?'<div class="tk-obs">'+esc(det)+'</div>':'');
   }).join('');
-  return '<div class="ticket"><h1>DM ESPETINHO</h1><div class="tk-c">CUPOM DE COZINHA</div>'+
+  return '<div class="ticket"><h1>'+esc(String(S.loja.nome).toUpperCase())+'</h1><div class="tk-c">CUPOM DO PEDIDO</div>'+
     (reimp?'<div class="reimp">*** REIMPRESSAO ***</div>':'<div class="tk-c tk-strong">ORIGINAL</div>')+
     '<div class="tk-big">'+esc(o.id)+'</div><hr>'+
     '<div class="tk-l"><span>'+esc(o.dia)+'</span><span>'+esc(o.criadoEm)+'</span></div>'+
@@ -960,11 +959,11 @@ function cupomHTML(o,reimp){
     '<div class="tk-l"><span>Pagto</span><span>'+esc(o.pay.label)+'</span></div>'+
     (o.pay.troco?'<div class="tk-l"><span>Troco p/</span><span>'+money(o.pay.troco)+'</span></div>':'')+
     (o.obs?'<div class="tk-obs">Obs.: '+esc(o.obs)+'</div>':'')+
-    '<hr><div class="tk-c">Levar este cupom a cozinha</div></div>';
+    '<hr><div class="tk-c">Separe este cupom com o pedido</div></div>';
 }
 function abrirCupom(o,reimp){
   $('print-area').innerHTML=cupomHTML(o,reimp);
-  modal('<h2 class="center">Cupom de cozinha</h2>'+cupomHTML(o,reimp)+
+  modal('<h2 class="center">Cupom do pedido</h2>'+cupomHTML(o,reimp)+
     '<div class="sticky-cta"><button class="btn btn-primary btn-block" data-action="do-print">'+ic('printer')+' Imprimir</button>'+
     '<button class="btn btn-ghost btn-block" style="margin-top:8px" data-action="close-modal">Fechar</button></div>',true);
 }
@@ -1078,7 +1077,7 @@ function admPagamentos(){
 }
 function admImpressao(){
   return '<div class="pagehead"><h2>Impressão</h2></div>'+
-    '<div class="card"><p class="muted" style="margin-top:0">Teste como o cupom de cozinha vai sair na impressora.</p>'+
+    '<div class="card"><p class="muted" style="margin-top:0">Teste como o cupom do pedido vai sair na impressora.</p>'+
     '<button class="btn btn-primary btn-block" data-action="adm-test-print">'+ic('printer')+' Imprimir cupom de teste</button></div>'+
     '<div class="notice warn">'+ic('warn')+'<div>Como o celular não confirma se o papel saiu, todo pedido tem "Reimprimir cupom", e a 2ª via vem marcada como REIMPRESSÃO pra não duplicar produção.</div></div>';
 }
@@ -1216,7 +1215,7 @@ on('chk-dadosok',function(){
   var c=UI.chk;
   var nome=(c.nome||UI.me.nome||'').trim(), whats=(c.whats||UI.me.tel||'').trim();
   if(!nome){ toast('Informe seu nome','err'); return; }
-  if(!telValido(whats)){ toast('Cadastre um WhatsApp válido com DDD — o restaurante precisa dele pra avisar sobre o pedido','err'); return; }
+  if(!telValido(whats)){ toast('Cadastre um WhatsApp válido com DDD — a loja precisa dele pra avisar sobre o pedido','err'); return; }
   c.nome=nome; c.whats=whats;   // fixa os valores (inclusive quando vieram do perfil já cadastrado)
   if(!lojaAberta()){ toast('Infelizmente estamos fechado no momento','err'); return; }
   UI.cli.screen='pagamento'; render();
@@ -1331,7 +1330,7 @@ function guard(o,st){ if(!o||st.indexOf(o.status)<0){ toast('Ação indisponíve
 on('adm-aprovar-pix',function(d){ var o=order(d.id); if(!guard(o,['em_validacao']))return; o.pay.status='aprovado'; o.status='aguardando_aceite'; addHist(o,'Aprovou o Pix'); audit('Aprovou Pix '+o.id,o.id); save(); toast('Pix confirmado. Agora aceite e imprima.','ok'); render(); });
 on('adm-solicitar-comprov',function(d){ var o=order(d.id); if(!guard(o,['em_validacao']))return; o.status='aguardando_comprovante'; o.pay.status='pendente'; addHist(o,'Pediu novo comprovante'); save(); toast('Cliente vai poder reenviar o comprovante','info'); render(); });
 on('adm-recusar',function(d){ var o=order(d.id); if(!guard(o,['em_validacao','aguardando_comprovante','aguardando_aceite']))return; pedirMotivo('Recusar pedido',['Comprovante ilegível','Valor divergente','Fora da área de entrega','Produto indisponível'],function(m){ o.status='recusado'; o.pay.motivoRecusa=m; addHist(o,'Recusou: '+m); audit('Recusou '+o.id,o.id); save(); toast('Pedido recusado','err'); render(); }); });
-on('adm-aceitar',function(d){ var o=order(d.id); if(!guard(o,['aguardando_aceite']))return; o.status='em_preparo'; o.reimpressoes=0; addHist(o,'Aceitou e imprimiu o cupom'); audit('Aceitou '+o.id,o.id); save(); abrirCupom(o,false); toast('Pedido aceito. Foi para a cozinha.','ok'); });
+on('adm-aceitar',function(d){ var o=order(d.id); if(!guard(o,['aguardando_aceite']))return; o.status='em_preparo'; o.reimpressoes=0; addHist(o,'Aceitou e imprimiu o cupom'); audit('Aceitou '+o.id,o.id); save(); abrirCupom(o,false); toast('Pedido aceito. Foi para o preparo.','ok'); });
 on('adm-reimprimir',function(d){ var o=order(d.id); if(!o)return; o.reimpressoes=(o.reimpressoes||0)+1; addHist(o,'Reimprimiu (via '+(o.reimpressoes+1)+')'); save(); abrirCupom(o,true); });
 on('adm-pronto',function(d){ var o=order(d.id); if(!guard(o,['em_preparo']))return; o.status='pronto'; addHist(o,'Marcou como pronto'); save(); toast('Pedido pronto','ok'); render(); });
 on('adm-saiu',function(d){ var o=order(d.id); if(!guard(o,['pronto']))return; if(o.tipo!=='delivery'){ toast('Retirada não sai para entrega','err'); return; } o.status='saiu'; addHist(o,'Saiu para entrega'); save(); toast('Saiu para entrega','ok'); render(); });
@@ -1531,7 +1530,7 @@ function cloudBoot(){
   sb.from('estado').select('data,rev').eq('id',1).single().then(function(r){
     if(r&&r.data&&r.data.data&&r.data.data.produtos){ if(aplicarNuvem(r.data)) render(); }
     else { cloudPush(); }   // nuvem vazia -> sobe o catálogo atual
-  }).catch(function(e){ console.warn('DM cloud boot:', e&&e.message); });
+  }).catch(function(e){ console.warn('Lírio cloud boot:', e&&e.message); });
   cloudSubscribe();
   setInterval(cloudPull, 5000);   // reforço caso o tempo-real caia
 }

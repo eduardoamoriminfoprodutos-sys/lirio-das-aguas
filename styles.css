@@ -1,10 +1,10 @@
-/* ================= DM ESPETINHOS DELIVERY — design system (escuro premium) =================
+/* ================= LÍRIO DAS ÁGUAS FLORICULTURA — design system (claro) =================
    Responsivo: mobile (coluna única + barra inferior fixa) e desktop (nav no topo + grade).
    Ícones SVG (sem emoji). */
 :root{
   --bg:#f0f1ec; --bg2:#e7e8e1; --surface:#ffffff; --surface2:#f5f5ef; --surface3:#eae9e1;
   --line:#e3e1d8; --line2:#d4d2c6;
-  --gold:#D9739E; --gold2:#B4893A; --gold-dark:#8a6a24;
+  --gold:#BC4A7D; --gold2:#8A6A1E; --gold-dark:#6f5418;
   --text:#241f1b; --text2:#6f665c; --text3:#9a9084;
   --ok:#2FA866; --warn:#E0891A; --err:#D24436; --info:#2f7fc4;
   --shadow:0 12px 30px rgba(40,30,20,.12); --shadow-sm:0 4px 14px rgba(40,30,20,.08);
@@ -76,7 +76,7 @@ input,select,textarea{font-family:inherit}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;cursor:pointer;font-family:'Sora';font-weight:700;font-size:15.5px;border-radius:14px;padding:15px 18px;transition:.15s;line-height:1}
 .btn .ic{width:19px;height:19px}
 .btn:active{transform:scale(.98)}
-.btn-primary{background:linear-gradient(135deg,#E68FB5,#CE5E90);color:#fff;box-shadow:var(--glow)}
+.btn-primary{background:linear-gradient(135deg,#B84A7C,#97295D);color:#fff;box-shadow:var(--glow)}
 .btn-primary:disabled{background:var(--surface2);color:var(--text3);box-shadow:none;cursor:not-allowed}
 .btn-outline{background:transparent;border:1.5px solid var(--line2);color:var(--text)}
 .btn-outline:hover{border-color:var(--gold)}
@@ -142,8 +142,8 @@ input,select,textarea{font-family:inherit}
 .prod.off{opacity:.6}
 
 /* ---------- Carrinho flutuante (fixo acima da barra) ---------- */
-.cartfab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + 12px);z-index:49;width:min(92%,432px);display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#E68FB5,#CE5E90);color:#fff;border:none;cursor:pointer;padding:14px 18px;border-radius:16px;box-shadow:var(--shadow);font-family:'Sora';font-weight:800;font-size:15px}
-.cartfab .cf-count{background:#fff;color:#CE5E90;min-width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:14px}
+.cartfab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + 12px);z-index:49;width:min(92%,432px);display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#B84A7C,#97295D);color:#fff;border:none;cursor:pointer;padding:14px 18px;border-radius:16px;box-shadow:var(--shadow);font-family:'Sora';font-weight:800;font-size:15px}
+.cartfab .cf-count{background:#fff;color:#97295D;min-width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:14px}
 .cartfab .cf-total{margin-left:auto}
 
 /* ---------- Detalhe produto ---------- */
@@ -438,7 +438,7 @@ button.kpi{font-family:inherit}
 .coupon input{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 14px;color:var(--text);font-size:14px;outline:none}
 .coupon input:focus{border-color:var(--gold)}
 .coupon .btn{padding:0 20px}
-.coupon-ok{flex:1;display:flex;align-items:center;gap:8px;background:rgba(47,179,110,.1);border:1px solid rgba(47,179,110,.35);color:#a5e0c2;border-radius:12px;padding:12px 14px;font-size:13.5px}
+.coupon-ok{flex:1;display:flex;align-items:center;gap:8px;background:rgba(47,179,110,.1);border:1px solid rgba(47,179,110,.35);color:#1f7d4a;border-radius:12px;padding:12px 14px;font-size:13.5px}
 .coupon-ok .ic{width:16px;height:16px}
 .coupon-ok button{margin-left:auto;background:none;border:none;color:var(--err);font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:underline}
 .msg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -448,7 +448,7 @@ button.kpi{font-family:inherit}
 /* ---------- Alerta flutuante de pedidos (admin) ---------- */
 .adm-alert{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + 12px);z-index:55;width:min(94%,460px);
   display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;
-  background:linear-gradient(135deg,#fff6de,#ffffff);border:1.5px solid var(--gold);border-radius:16px;padding:12px 14px;
+  background:linear-gradient(135deg,#fdeef4,#ffffff);border:1.5px solid var(--gold);border-radius:16px;padding:12px 14px;
   box-shadow:0 12px 30px rgba(0,0,0,.5);animation:aapulse 2.2s infinite}
 .adm-alert .aa-ic{width:40px;height:40px;border-radius:12px;background:rgba(217,115,158,.18);color:var(--gold2);display:grid;place-items:center;flex:none}
 .adm-alert .aa-ic .ic{width:22px;height:22px}
@@ -513,8 +513,8 @@ button.kpi{font-family:inherit}
 .pd-arrow.left{left:10px}
 .pd-arrow.right{right:10px}
 .pd-dots{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:6px;z-index:2}
-.pd-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.65);box-shadow:0 1px 3px rgba(0,0,0,.35);transition:.15s}
-.pd-dot.on{background:#fff;width:10px}
+.pd-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.85);border:1px solid rgba(0,0,0,.28);box-shadow:0 1px 3px rgba(0,0,0,.35);transition:.15s}
+.pd-dot.on{background:#BC4A7D;border-color:#BC4A7D;width:10px;height:10px}
 /* ===== galeria de fotos (form do produto no admin) ===== */
 .pf-gallery{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 4px}
 .pf-thumb{position:relative;width:74px;height:74px;border-radius:12px;overflow:hidden;border:1px solid var(--line2);background:var(--surface2);flex:none}
