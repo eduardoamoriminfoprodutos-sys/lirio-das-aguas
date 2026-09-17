@@ -16,6 +16,7 @@ var SUPA_URL = ''; // modo local por enquanto (preencher pra ligar o Supabase)
 var SUPA_KEY = '';
 var CLOUD = !!(SUPA_URL && SUPA_KEY && typeof window!=='undefined' && window.supabase);
 var sb = CLOUD ? window.supabase.createClient(SUPA_URL, SUPA_KEY) : null;
+var PERMITIR_PEDIDO_SEMPRE = true; // FASE DE TESTE: cliente faz pedido em qualquer horário. Por false ao lançar pra valer.
 var $  = function(id){ return document.getElementById(id); };
 var esc = function(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); };
 var money = function(v){ return 'R$ ' + (Number(v)||0).toFixed(2).replace('.', ','); };
@@ -123,7 +124,8 @@ function seed(){
     ['Buquê de Lírios',70,105,150,'Lírios perfumados, o clássico da casa.'],
     ['Buquê de Gérberas',55,80,115,'Gérberas coloridas e cheias de alegria.'],
     ['Buquê de Girassóis',60,90,125,'Girassóis radiantes para iluminar o dia.'],
-    ['Buquê do Campo',50,75,105,'Mix de flores do campo, delicado e natural.']
+    ['Buquê do Campo',50,75,105,'Mix de flores do campo, delicado e natural.'],
+    ['Buquê de Borboletas',85,120,160,'Borboletas azuis em papel, um presente encantador e diferente.']
   ].forEach(function(r){ produtos.push(novo({nome:r[0],preco:r[1],cat:'buques',hue:H.buques,desc:r[4],
       variacoes:[{nome:'Pequeno',preco:r[1]},{nome:'Médio',preco:r[2]},{nome:'Grande',preco:r[3]}], grupos:grpAdic()})); });
   [ ['Box Coração de Rosas com Ferrero',95,'Rosas em formato de coração com Ferrero Rocher.'],
@@ -143,6 +145,17 @@ function seed(){
     ['Arranjo em Vaso',110,'Arranjo de flores em vaso decorativo.'],
     ['Orquídea no Cachepô',130,'Orquídea elegante, um presente que dura.']
   ].forEach(function(r){ produtos.push(novo({nome:r[0],preco:r[1],cat:'flores',hue:H.flores,desc:r[2],grupos:grpAdic()})); });
+  // fotos reais (Instagram da Lírio) por nome de produto
+  var FOTOS={
+    'Box Coração de Rosas com Ferrero':['assets/prod-box-coracao.jpg'],
+    'Buquê do Campo':['assets/prod-buque-campo.jpg'],
+    'Buquê de Rosas Vermelhas':['assets/prod-buque-vermelhas.jpg'],
+    'Box Surpresa Personalizada':['assets/prod-box-personalizada.jpg'],
+    'Cesta Maternidade':['assets/prod-cesta-maternidade.jpg'],
+    'Box Feminino':['assets/prod-box-feminino.jpg'],
+    'Buquê de Borboletas':['assets/prod-buque-borboletas.jpg']
+  };
+  produtos.forEach(function(p){ if(FOTOS[p.nome]){ p.fotos=FOTOS[p.nome].slice(); p.foto=p.fotos[0]; } });
   var categorias = [
     {id:'buques',nome:'Buquês',ordem:1,oculta:false},{id:'boxes',nome:'Box e Caixas',ordem:2,oculta:false},
     {id:'cestas',nome:'Cestas e Presentes',ordem:3,oculta:false},{id:'baloes',nome:'Balões',ordem:4,oculta:false},
@@ -268,6 +281,7 @@ function agoraMinLoja(){
   }catch(e){ var d=new Date(); return d.getHours()*60+d.getMinutes(); }
 }
 function lojaAberta(){
+  if(PERMITIR_PEDIDO_SEMPRE && (typeof APP_MODE==='undefined' || APP_MODE!=='admin')) return true; // teste: cliente sempre pode pedir
   var l=S.loja||{};
   if(l.pausado) return false;
   var m=agoraMinLoja(), js=janelasLoja();
@@ -797,7 +811,8 @@ function admVisao(){
   var preparo=c(function(p){return p.status==='em_preparo';});
   var prontos=c(function(p){return p.status==='pronto';});
   var entrega=c(function(p){return p.status==='saiu';});
-  var h='<div class="pagehead"><h2>Visão geral</h2><p>Resumo da operação · '+hoje()+'</p></div>';
+  var h='<img class="adm-banner" src="assets/banner-lirio.jpg" alt="Lírio das Águas">';
+  h+='<div class="pagehead"><h2>Visão geral</h2><p>Resumo da operação · '+hoje()+'</p></div>';
   h+='<div class="kpi-grid">'+
     kpi('em_validacao',valid,'Aguard. validação','clock',valid>0)+
     kpi('aguardando_aceite',novos,'Novos pedidos','bell',novos>0)+
@@ -811,6 +826,22 @@ function admVisao(){
     h+='<div class="adm-sec-t">Hoje</div><div class="kpi-grid">'+
       kpiPlain(money(fatHoje),'Faturamento','tag',true)+kpiPlain(conclHoje,'Concluídos','checkc')+
       kpiPlain(S.clientes.length,'Clientes na base','users')+kpiPlain('+'+novosCli,'Novos hoje','star')+'</div>';
+    // mini-dashboard de faturamento (mês / dia / 7 dias)
+    var concl=P.filter(function(p){return p.status==='concluido';});
+    var nowD=new Date(), yy=nowD.getFullYear(), mmn=nowD.getMonth();
+    var mesArr=concl.filter(function(p){ var d=new Date(p.ts||0); return d.getFullYear()===yy&&d.getMonth()===mmn; });
+    var fatMes=mesArr.reduce(function(a,p){return a+p.total;},0);
+    var ticket=mesArr.length?fatMes/mesArr.length:0;
+    var dnome=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'], d7=[], lbl7=[], baseD=new Date(yy,mmn,nowD.getDate());
+    for(var kk=6;kk>=0;kk--){ var dd=new Date(baseD.getTime()-kk*86400000); lbl7.push(dnome[dd.getDay()]);
+      d7.push(concl.filter(function(p){ var pd=new Date(p.ts||0); return pd.getFullYear()===dd.getFullYear()&&pd.getMonth()===dd.getMonth()&&pd.getDate()===dd.getDate(); }).reduce(function(a,p){return a+p.total;},0)); }
+    var maxd=Math.max.apply(null,d7.concat([1]));
+    h+='<div class="adm-sec-t">Faturamento</div><div class="kpi-grid">'+
+      kpiPlain(money(fatMes),'Este mês','tag',true)+kpiPlain(money(fatHoje),'Hoje','tag')+
+      kpiPlain(money(ticket),'Ticket médio','star')+kpiPlain(mesArr.length,'Pedidos no mês','checkc')+'</div>';
+    h+='<div class="card" style="margin-top:10px"><div class="muted small2" style="margin-bottom:8px">Faturamento dos últimos 7 dias</div><div class="chart">'+
+      d7.map(function(v,i){ return '<div class="bar-wrap"><div class="bar" style="height:'+Math.round(v/maxd*100)+'%" title="'+money(v)+'"></div><small>'+lbl7[i]+'</small></div>'; }).join('')+
+      '</div>'+(fatMes===0?'<div class="empty" style="padding:10px">Sem faturamento ainda. Aparece aqui quando você concluir pedidos.</div>':'')+'</div>';
   }
   var esgotados=S.produtos.filter(function(p){return p.disp==='esgotado';}).length;
   if(esgotados) h+='<div class="notice info" style="margin-top:16px">'+ic('info')+'<div>'+esgotados+' produto(s) marcados como esgotados hoje.</div></div>';
