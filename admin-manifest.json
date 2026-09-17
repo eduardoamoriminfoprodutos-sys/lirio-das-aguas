@@ -1,0 +1,14 @@
+{
+  "name": "Lírio das Águas Painel",
+  "short_name": "Lírio das Águas Painel",
+  "description": "Painel do dono da Lírio das Águas: pedidos, pagamentos, catálogo e relatórios.",
+  "start_url": "./admin.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f0f1ec",
+  "theme_color": "#f0f1ec",
+  "icons": [
+    { "src": "assets/logo-lirio.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/logo-lirio.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
