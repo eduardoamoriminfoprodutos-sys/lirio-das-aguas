@@ -527,6 +527,5 @@ button.kpi{font-family:inherit}
 .pf-thumb.pf-add .ic{width:22px;height:22px}
 .pf-thumb.pf-add span{font-size:10px;font-weight:700}
 
-/* banner do painel (Visão geral) */
-.adm-banner{width:100%;max-height:200px;object-fit:cover;border-radius:var(--r-lg);display:block;margin-bottom:14px;box-shadow:var(--shadow-sm)}
-@media(max-width:640px){ .adm-banner{max-height:130px} }
+/* banner do painel (Visão geral) — mostra a arte inteira, sem cortar; limita a largura no desktop */
+.adm-banner{width:100%;max-width:620px;height:auto;display:block;margin:0 auto 16px;border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
