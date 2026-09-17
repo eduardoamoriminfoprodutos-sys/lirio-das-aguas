@@ -727,6 +727,7 @@ function cliPerfil(){
     }).join('');
   } else h+='<div class="empty" style="padding:24px">Nenhum endereço salvo ainda.</div>';
   h+='<button class="btn btn-ghost btn-block" style="margin-top:8px" data-action="me-endadd">'+ic('plus')+' Adicionar endereço</button>';
+  if(!appInstalado()) h+='<div class="sp"></div><button class="btn btn-outline btn-block" data-action="app-instalar">'+ic('phone')+' Instalar o app</button>';
   h+='<div class="sp"></div><button class="btn btn-red btn-block" data-action="cli-logout">'+ic('x')+' Sair da conta</button>';
   return h;
 }
@@ -1591,3 +1592,34 @@ if(CLOUD){
   boot();
 }
 if(typeof window!=='undefined') setInterval(clockWatch, 30000);   // vira Aberto/Fechado sozinho ao cruzar o horário
+
+/* ---- Instalar o app (PWA) — convite OPCIONAL e dispensável ---- */
+var deferredPrompt=null;
+function appInstalado(){ try{ return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone===true; }catch(e){ return false; } }
+function ehIOS(){ return /iphone|ipad|ipod/i.test((navigator&&navigator.userAgent)||''); }
+function instalarDispensado(){ try{ return localStorage.getItem('lirio_install_dismiss')==='1'; }catch(e){ return false; } }
+function bannerInstalarEl(){
+  var el=document.getElementById('install-banner'); if(el) return el;
+  el=document.createElement('div'); el.id='install-banner'; el.className='install-banner';
+  el.innerHTML='<div class="ib-ic">'+ic('phone')+'</div><div class="ib-tx"><strong>Instalar o app</strong><span>Acesso rápido na tela inicial</span></div>'+
+    '<button class="ib-btn" data-action="app-instalar">Instalar</button><button class="ib-x" data-action="app-instalar-depois" aria-label="Agora não">'+ic('x')+'</button>';
+  document.body.appendChild(el); return el;
+}
+function mostrarConviteInstalar(){ if(appInstalado()||instalarDispensado()) return; bannerInstalarEl().classList.add('show'); }
+function esconderConviteInstalar(){ var el=document.getElementById('install-banner'); if(el) el.classList.remove('show'); }
+function instrucoesInstalar(){
+  var passos = ehIOS()
+    ? 'No iPhone/iPad (Safari):<br>1. Toque no botão <strong>Compartilhar</strong> (quadrado com seta pra cima).<br>2. Escolha <strong>Adicionar à Tela de Início</strong>.<br>3. Toque em <strong>Adicionar</strong>.'
+    : 'No navegador do celular:<br>1. Toque no menu <strong>⋮</strong>.<br>2. Escolha <strong>Instalar app</strong> (ou <strong>Adicionar à tela inicial</strong>).';
+  modal('<h2 class="center">Instalar o app</h2><div class="notice info" style="margin-top:8px">'+ic('phone')+'<div>'+passos+'</div></div><div class="sticky-cta"><button class="btn btn-primary btn-block" data-action="close-modal">Entendi</button></div>', true);
+}
+on('app-instalar',function(){
+  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.userChoice.then(function(){ deferredPrompt=null; esconderConviteInstalar(); }); }
+  else { instrucoesInstalar(); }
+});
+on('app-instalar-depois',function(){ try{ localStorage.setItem('lirio_install_dismiss','1'); }catch(e){} esconderConviteInstalar(); });
+if(typeof window!=='undefined'){
+  window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); deferredPrompt=e; mostrarConviteInstalar(); });
+  window.addEventListener('appinstalled', function(){ deferredPrompt=null; try{ localStorage.setItem('lirio_install_dismiss','1'); }catch(e){} esconderConviteInstalar(); });
+  if(ehIOS() && !appInstalado() && !instalarDispensado()) setTimeout(mostrarConviteInstalar, 1500); // iOS não dispara beforeinstallprompt
+}

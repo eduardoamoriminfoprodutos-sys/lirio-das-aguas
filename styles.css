@@ -529,3 +529,16 @@ button.kpi{font-family:inherit}
 
 /* banner do painel (Visão geral) — mostra a arte inteira, sem cortar; limita a largura no desktop */
 .adm-banner{width:100%;max-width:620px;height:auto;display:block;margin:0 auto 16px;border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
+
+/* convite de instalacao (PWA) */
+.install-banner{position:fixed;left:50%;transform:translateX(-50%) translateY(160%);bottom:calc(var(--tabh) + 12px);z-index:60;width:min(94%,440px);display:flex;align-items:center;gap:11px;background:var(--surface);border:1px solid var(--line2);border-radius:16px;padding:11px 12px;box-shadow:var(--shadow);transition:transform .28s ease}
+.install-banner.show{transform:translateX(-50%) translateY(0)}
+.install-banner .ib-ic{width:40px;height:40px;border-radius:11px;background:rgba(217,115,158,.14);color:var(--gold);display:grid;place-items:center;flex:none}
+.install-banner .ib-ic .ic{width:22px;height:22px}
+.install-banner .ib-tx{flex:1;display:flex;flex-direction:column;min-width:0}
+.install-banner .ib-tx strong{font-family:'Sora';font-size:14px;color:var(--text);line-height:1.15}
+.install-banner .ib-tx span{font-size:11.5px;color:var(--text2)}
+.install-banner .ib-btn{flex:none;background:linear-gradient(135deg,#B84A7C,#97295D);color:#fff;border:none;border-radius:10px;padding:9px 15px;font-weight:700;font-size:13px;cursor:pointer}
+.install-banner .ib-x{flex:none;width:30px;height:30px;border:none;background:transparent;color:var(--text3);cursor:pointer;display:grid;place-items:center}
+.install-banner .ib-x .ic{width:16px;height:16px}
+@media(min-width:900px){ .install-banner{bottom:20px;left:auto;right:20px;transform:translateY(160%);width:380px} .install-banner.show{transform:translateY(0)} }
