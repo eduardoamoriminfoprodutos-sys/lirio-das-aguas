@@ -163,7 +163,7 @@ function seed(){
   ];
   S = {
     loja:{ nome:'Lírio das Águas', pausado:false, janelas:[['08:00','18:00']], horario:'Seg a Sáb · 08h-18h',
-      endereco:'Breu Branco - PA · entregamos em Breu Branco, Goianésia e Tucuruí', whats:'(94) 00000-0000',
+      endereco:'Breu Branco - PA · entregamos em Breu Branco, Goianésia e Tucuruí', whats:'(94) 99104-6048',
       instagram:'@lirio_das_aguas_floricultura',
       pixKey:'', pixNome:'Lírio das Águas Floricultura', banner:'Entregamos em Breu Branco, Goianésia e Tucuruí',
       taxaEntrega:10, prazoEntrega:'no mesmo dia (a combinar)', cupomAtivo:false,
@@ -588,7 +588,9 @@ function cliPagamento(){
       '<div class="pixkey">'+esc(S.loja.pixKey)+'</div>'+
       '<button class="btn btn-outline btn-sm btn-block" data-action="chk-copiapix">'+ic('copy')+' Copiar chave Pix</button>'+
       '<div class="upload-wrap"><label class="up-lb">Comprovante do Pix</label>'+
-      '<div class="upload'+(c.comprov?' has':'')+'" data-action="chk-upload">'+(c.comprov?ic('check')+' Comprovante anexado<img src="'+c.comprov+'">':ic('attach')+' Toque para anexar o comprovante')+'</div></div>'+
+      '<div class="upload'+(c.comprov?' has':'')+'" data-action="chk-upload">'+(c.comprov?ic('check')+' Comprovante anexado<img src="'+c.comprov+'">':ic('attach')+' Toque para anexar o comprovante')+'</div>'+
+      '<a class="btn btn-outline btn-sm btn-block" style="text-decoration:none;margin-top:8px" href="'+waLink(S.loja.whats,'Olá! Estou finalizando um pedido no app da Lírio das Águas e não consegui anexar o comprovante do Pix. Posso enviar por aqui?')+'" target="_blank" rel="noopener">'+ic('chat')+' Não consegui anexar o comprovante</a>'+
+      '</div>'+
       '<div class="notice warn left">'+ic('warn')+'<div>O pedido só entra em preparo depois que a loja <strong>confirmar o Pix</strong>. Anexar o comprovante não aprova sozinho.</div></div></div>';
   } else if(c.pay==='dinheiro'){
     h+='<div class="card"><div class="field"><label>Precisa de troco? Para quanto? (opcional)</label><input inputmode="numeric" data-oninput="chk-f" data-k="troco" value="'+esc(c.troco)+'" placeholder="Ex.: 50"></div></div>';
